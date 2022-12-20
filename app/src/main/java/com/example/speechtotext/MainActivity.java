@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    protected  static  final  int RESULT_SPEECH =100;
+    protected  static  final  int RESULT_SPEECH =1;
     private ImageButton btnSpeak;
     private TextView tvText;
     @Override
@@ -29,10 +29,15 @@ public class MainActivity extends AppCompatActivity {
             public  void onClick(View view){
                 Intent intent =new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES, "ru_RU");
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Сизди угуп жатам...");
+                intent.putExtra(RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES, "ko-KR");
+                intent.putExtra(RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES, "ru-RU");
+                intent.putExtra(RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES, "en-US");
+                intent.putExtra(
+                        RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 9000);
                 try {
                     startActivityForResult(intent,RESULT_SPEECH);
-                    tvText.setText("");
+
                 }catch (ActivityNotFoundException e ){
                     Toast.makeText(getApplicationContext(), "Ваше устройство не поддерживает Speech to Text плагин",Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -47,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case RESULT_SPEECH:
                 if (resultCode == RESULT_OK && data != null){
+                    //! got speech result
                     ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    tvText.setText(text.get(0));
+                    //! show speech result in UI
+                    tvText.setText("Сиздин созуңуз: "+ text.get(0));
                 }
                 break;
         }
